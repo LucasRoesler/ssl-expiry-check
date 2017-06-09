@@ -1,0 +1,33 @@
+name: ssl-expiry
+channels:
+- defaults
+dependencies:
+- appnope=0.1.0=py36_0
+- decorator=4.0.11=py36_0
+- ipython=6.1.0=py36_0
+- ipython_genutils=0.2.0=py36_0
+- jedi=0.10.2=py36_2
+- openssl=1.0.2l=0
+- path.py=10.3.1=py36_0
+- pexpect=4.2.1=py36_0
+- pickleshare=0.7.4=py36_0
+- pip=9.0.1=py36_1
+- prompt_toolkit=1.0.14=py36_0
+- ptyprocess=0.5.1=py36_0
+- pygments=2.2.0=py36_0
+- python=3.6.1=2
+- readline=6.2=2
+- setuptools=27.2.0=py36_0
+- simplegeneric=0.8.1=py36_1
+- six=1.10.0=py36_0
+- sqlite=3.13.0=0
+- tk=8.5.18=0
+- traitlets=4.3.2=py36_0
+- wcwidth=0.1.7=py36_0
+- wheel=0.29.0=py36_0
+- xz=5.2.2=1
+- zlib=1.2.8=3
+- pip:
+  - ipython-genutils==0.2.0
+  - prompt-toolkit==1.0.14
+
