@@ -1,4 +1,4 @@
-# Author: Lucas Roelser <lucas.roesler@teem.com>
+# Author: Lucas Roelser <roesler.lucas@gmail.com>
 # Modified from serverlesscode.com/post/ssl-expiration-alerts-with-lambda/
 
 import datetime
@@ -9,11 +9,6 @@ import socket
 import ssl
 import time
 
-loglevel = os.environ.get('LOGLEVEL', 'INFO')
-numeric_level = getattr(logging, loglevel.upper(), None)
-if not isinstance(numeric_level, int):
-    raise ValueError('Invalid log level: %s' % loglevel)
-logging.basicConfig(level=numeric_level)
 
 logger = logging.getLogger('SSLVerify')
 
@@ -47,24 +42,32 @@ def ssl_valid_time_remaining(hostname: str) -> datetime.timedelta:
     return expires - datetime.datetime.utcnow()
 
 
-def test_host(hostname: str) -> str:
+def test_host(hostname: str, buffer_days: int=30) -> str:
     """Return test message for hostname cert expiration."""
     try:
-        will_expire_in = ssl_valid_time_remaining(host)
+        will_expire_in = ssl_valid_time_remaining(hostname)
     except ssl.CertificateError as e:
-        return f'{host} cert error {e}'
+        return f'{hostname} cert error {e}'
+    except ssl.SSLError as e:
+        return f'{hostname} cert error {e}'
     except socket.timeout as e:
-        return f'{host} could not connect'
+        return f'{hostname} could not connect'
     else:
         if will_expire_in < datetime.timedelta(days=0):
-            return f'{host} cert will expired'
-        elif will_expire_in < datetime.timedelta(days=30):
-            return f'{host} cert will expire in {will_expire_in}'
+            return f'{hostname} cert will expired'
+        elif will_expire_in < datetime.timedelta(days=buffer_days):
+            return f'{hostname} cert will expire in {will_expire_in}'
         else:
-            return f'{host} cert is fine'
+            return f'{hostname} cert is fine'
 
 
 if __name__ == '__main__':
+    loglevel = os.environ.get('LOGLEVEL', 'INFO')
+    numeric_level = getattr(logging, loglevel.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError('Invalid log level: %s' % loglevel)
+    logging.basicConfig(level=numeric_level)
+
     start = time.time()
     for host in fileinput.input():
         host = host.strip()
